@@ -16,6 +16,12 @@ Some inspirational machines:
   make sense to start with a Patatap-like project, since it's relatively 
   simple, but still introducing many concepts they'll need for a full beat 
   machine.
+
+- **typedrummer -- http://typedrummer.com/**
+  
+  A bit of a hybrid between *Drum Machine* and *Patatap*. Use keys to build a
+  beat, but then that sequence becomes a pattern that's repeated continuously.
+  Maybe makes sense as a second step, between *Patatap* and *Drum Machine*.
   
 So, what does our *Patatap* look like?
 
