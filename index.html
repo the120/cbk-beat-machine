@@ -28,6 +28,10 @@
         var sound3 = 'http://www.patatap.com/assets/A/zig-zag.mp3';
         var sound4 = 'http://www.patatap.com/assets/C/zig-zag.mp3';
         
+        // Keep track of how long each sound has been playing, so that we don't
+        // play them too rapidly.
+        var playerTimeout = {};
+        
         // Wait ("listen") for a click event on each button, and call the
         // playSound function when it happens. See below for playSound.
         sound1btn.addEventListener('click', function() {
@@ -74,6 +78,17 @@
         // - "el" is the element that was clicked on.
         // - "soundfile" is a string that has the location of the sound file.
         function playSound(el, soundfile) {
+            
+            // If the sound is already playing, then exit the function
+            // immediately.
+            if (playerTimeout[soundfile]) { return; }
+            
+            // If the sound isn't playing yet, set a timer for however long we
+            // should wait before playing the sound again.
+            playerTimeout[soundfile] = setTimeout(function() {
+                clearTimeout(playerTimeout[soundfile]);
+                delete playerTimeout[soundfile];
+            }, 500);
 
             // If the "el" does not have an attribute called "mp3", then create
             // it. "el.mp3" will be an "Audio" object.
@@ -88,8 +103,8 @@
             // time.
             else {
                 el.mp3.currentTime = 0;
-                if(el.mp3.paused) el.mp3.play();
-                else el.mp3.pause();
+                if (el.mp3.paused) { el.mp3.play(); }
+                else { el.mp3.pause(); }
             }
         }
     </script>
