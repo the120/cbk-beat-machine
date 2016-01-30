@@ -2,65 +2,125 @@
 <html>
 <head>
     <title></title>
+    <style>
+
+      html, body {
+        margin: 0;
+      }
+
+      .grid {
+        font-size: 0;
+      }
+
+      #quadrant-1 .expandable {
+        background-color: #169c78;
+      }
+
+      #quadrant-2 .expandable {
+        background-color: #f05442;
+      }
+
+      #quadrant-3  .expandable{
+        background-color: #41b6ab;
+      }
+
+      #quadrant-4 .expandable {
+        background-color: #da4f70;
+      }
+
+      .grid--4 {
+        display: inline-block;
+        width: 25%;
+        height: 100vh;
+        text-align: center;
+      }
+
+      .expandable {
+        margin: 0 auto;
+        width: 100%;
+        height: 100vh;
+        transition: opacity 0.3s linear, width 1s ease;
+      }
+
+      .off .expandable {
+        opacity: 0;
+        width: 0;
+      }
+
+      .on .expandable {
+        opacity: 1;
+        width: 100%;
+      }
+
+    </style>
 </head>
+<!-- Play / Pause get added to grid quadrant with AddClass -->
+<!-- Pause state is more opaque -->
 <body>
-    <button id="sound1">a</button>
-    <button id="sound2">s</button>
-    <button id="sound3">d</button>
-    <button id="sound4">f</button>
-    <!-- 
+    <div class = "grid">
+      <div class="grid--4 off" id="quadrant-1">
+        <div class="expandable">
+          <button id="sound1">a</button>
+        </div>
+      </div>
+      <div class="grid--4 off" id="quadrant-2">
+        <div class="expandable">
+          <button id="sound2">s</button>
+        </div>
+      </div>
+      <div class="grid--4 off" id="quadrant-3">
+        <div class="expandable">
+          <button id="sound3">d</button>
+        </div>
+      </div>
+      <div class= "grid--4 off" id="quadrant-4">
+        <div class="expandable">
+          <button id="sound4">f</button>
+        </div>
+      </div>
+    </div>
+    <!--
       Some useful references:
       - https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Using_HTML5_audio_and_video
 
       Also, we should do this game: https://code.org/files/ConditionalsHoC.pdf
     -->
-    
+
     <script>
         // Create a variable for each button element on the page, and for each
         // corresponding sound track.
-        var sound1btn = document.getElementById('sound1');
-        var sound2btn = document.getElementById('sound2');
-        var sound3btn = document.getElementById('sound3');
-        var sound4btn = document.getElementById('sound4');
-        
+
+        var quadrant1 = document.getElementById('quadrant-1');
+        var quadrant2 = document.getElementById('quadrant-2');
+        var quadrant3 = document.getElementById('quadrant-3');
+        var quadrant4 = document.getElementById('quadrant-4');
+
+
+
         var sound1 = 'http://www.patatap.com/assets/A/pinwheel.mp3';
         var sound2 = 'http://www.patatap.com/assets/F/pinwheel.mp3';
         var sound3 = 'http://www.patatap.com/assets/A/zig-zag.mp3';
         var sound4 = 'http://www.patatap.com/assets/C/zig-zag.mp3';
-        
+
         // Keep track of how long each sound has been playing, so that we don't
         // play them too rapidly.
         var playerTimeout = {};
-        
-        // Wait ("listen") for a click event on each button, and call the
-        // playSound function when it happens. See below for playSound.
-        sound1btn.addEventListener('click', function() {
-            playSound(this, sound1);
-        });
-        sound2btn.addEventListener('click', function() {
-            playSound(this, sound2);
-        });
-        sound3btn.addEventListener('click', function() {
-            playSound(this, sound3)
-        });
-        sound4btn.addEventListener('click', function() {
-            playSound(this, sound4);
-        });
-        
+
+
         // Also, wait for keyboard presses and play sounds then.
         document.addEventListener('keypress', function(evt) {
             switch (evt.charCode) {
                 case 97:   // 'a'
-                    playSound(sound1btn, sound1);
+                    playSound(quadrant1, sound1);
                     break;
                 case 115:  // 's'
-                    playSound(sound2btn, sound2);
+                    playSound(quadrant2, sound2);
                     break;
                 case 100:  // 'd'
-                    playSound(sound3btn, sound3);
+                    playSound(quadrant2, sound3);
                     break;
                 case 102:  // 'f'
-                    playSound(sound4btn, sound4);
+                    playSound(quadrant4, sound4);
                     break;
                 default:
                     console.log(evt.charCode);
@@ -68,43 +128,55 @@
             }
         })
 
-        
+
         // The playSound function
         // ----------------------
-        
+
         // The "playSound" function will play a sound and attach that sound to a
         // particular element.
-        // 
+        //
         // - "el" is the element that was clicked on.
         // - "soundfile" is a string that has the location of the sound file.
         function playSound(el, soundfile) {
-            
+
             // If the sound is already playing, then exit the function
             // immediately.
             if (playerTimeout[soundfile]) { return; }
-            
+
             // If the sound isn't playing yet, set a timer for however long we
             // should wait before playing the sound again.
             playerTimeout[soundfile] = setTimeout(function() {
                 clearTimeout(playerTimeout[soundfile]);
                 delete playerTimeout[soundfile];
-            }, 500);
+            }, 200);
+            
+            function turnOn() {
+                el.mp3.play();
+                el.classList.remove('off');
+                el.classList.add('on');
+            }
+            
+            function turnOff() {
+                el.mp3.pause();
+                el.classList.remove('on');
+                el.classList.add('off');
+            }
 
             // If the "el" does not have an attribute called "mp3", then create
             // it. "el.mp3" will be an "Audio" object.
             if (!el.mp3) {
                 el.mp3 = new Audio(soundfile);
                 el.mp3.loop = true;
-                el.mp3.play();
+                turnOn();
             }
-            
+
             // Otherwise (if "el" already does have an "mp3" attribute) play or
             // or pause the audio. Go back to the beginning of the track each
             // time.
             else {
                 el.mp3.currentTime = 0;
-                if (el.mp3.paused) { el.mp3.play(); }
-                else { el.mp3.pause(); }
+                if (el.mp3.paused) { turnOn(); }
+                else { turnOff(); }
             }
         }
     </script>
