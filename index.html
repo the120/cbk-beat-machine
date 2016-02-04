@@ -117,7 +117,7 @@
                     playSound(quadrant2, sound2);
                     break;
                 case 100:  // 'd'
-                    playSound(quadrant2, sound3);
+                    playSound(quadrant3, sound3);
                     break;
                 case 102:  // 'f'
                     playSound(quadrant4, sound4);
@@ -166,8 +166,12 @@
             // it. "el.mp3" will be an "Audio" object.
             if (!el.mp3) {
                 el.mp3 = new Audio(soundfile);
-                el.mp3.loop = true;
+                el.mp3.loop = false;
                 turnOn();
+                
+                el.mp3.addEventListener('ended', function() {
+                    turnOff();
+                });
             }
 
             // Otherwise (if "el" already does have an "mp3" attribute) play or
@@ -175,8 +179,7 @@
             // time.
             else {
                 el.mp3.currentTime = 0;
-                if (el.mp3.paused) { turnOn(); }
-                else { turnOff(); }
+                turnOn();
             }
         }
     </script>
