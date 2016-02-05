@@ -12,45 +12,25 @@
         font-size: 0;
       }
 
-      #stripe-0 .expandable {
-        background-color: #da4f70;
-      }
-
-      #stripe-1 .expandable {
+      #quadrant-1 .expandable {
         background-color: #169c78;
       }
 
-      #stripe-2 .expandable {
+      #quadrant-2 .expandable {
         background-color: #f05442;
       }
 
-      #stripe-3  .expandable{
+      #quadrant-3  .expandable{
         background-color: #41b6ab;
       }
 
-      #stripe-4 .expandable {
+      #quadrant-4 .expandable {
         background-color: #da4f70;
       }
 
-      #stripe-5 .expandable {
-        background-color: #169c78;
-      }
-
-      #stripe-6 .expandable {
-        background-color: #f05442;
-      }
-
-      #stripe-7  .expandable{
-        background-color: #41b6ab;
-      }
-
-      #stripe-8 .expandable {
-        background-color: #da4f70;
-      }
-
-      .stripe {
+      .grid--4 {
         display: inline-block;
-        width: 11%;
+        width: 25%;
         height: 100vh;
         text-align: center;
       }
@@ -88,13 +68,28 @@
 
     </style>
 </head>
-<!-- Play / Pause get added to grid stripe with AddClass -->
+<!-- Play / Pause get added to grid quadrant with AddClass -->
 <!-- Pause state is more opaque -->
 <body>
-    <div class="grid" id="grid">
-      <div class="stripe off" id="stripe-0">
+    <div class = "grid">
+      <div class="grid--4 off" id="quadrant-1">
         <div class="expandable">
-          <button>a</button>
+          <button id="sound1">a</button>
+        </div>
+      </div>
+      <div class="grid--4 off" id="quadrant-2">
+        <div class="expandable">
+          <button id="sound2">s</button>
+        </div>
+      </div>
+      <div class="grid--4 off" id="quadrant-3">
+        <div class="expandable">
+          <button id="sound3">d</button>
+        </div>
+      </div>
+      <div class= "grid--4 off" id="quadrant-4">
+        <div class="expandable">
+          <button id="sound4">f</button>
         </div>
       </div>
     </div>
@@ -116,63 +111,38 @@
     <script>
         // Create a variable for each button element on the page, and for each
         // corresponding sound track.
-        var grid = document.getElementById('grid');
-        var stripes = [document.getElementById('stripe-0')];
-        var letters = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']
-        
-        for (var q = 1; q < 10; q = q + 1) {
-            // Make a copy of the first stripe.
-            stripes[q] = stripes[0].cloneNode(true);
-            
-            // Update the id of the new copy.
-            stripes[q].setAttribute('id', 'stripe-' + q);
-            stripes[q].getElementsByTagName('button')[0].innerHTML = letters[q];
-            
-            // Add the new copy into the grid.
-            grid.appendChild(stripes[q]);
-        }
-        
-        var sounds = [
-            'http://patatap.com/assets/A/wipe.mp3',
-            'http://patatap.com/assets/A/veil.mp3',
-            'http://patatap.com/assets/A/prism-1.mp3',
-            'http://patatap.com/assets/A/prism-2.mp3',
-            'http://patatap.com/assets/A/prism-3.mp3',
-            'http://patatap.com/assets/A/clay.mp3',
-            'http://patatap.com/assets/A/piston-1.mp3',
-            'http://patatap.com/assets/A/piston-2.mp3',
-            'http://patatap.com/assets/A/piston-3.mp3'
-        ];
+
+        var quadrant1 = document.getElementById('quadrant-1');
+        var quadrant2 = document.getElementById('quadrant-2');
+        var quadrant3 = document.getElementById('quadrant-3');
+        var quadrant4 = document.getElementById('quadrant-4');
+
+
+
+        var sound1 = 'http://www.patatap.com/assets/A/pinwheel.mp3';
+        var sound2 = 'http://www.patatap.com/assets/F/pinwheel.mp3';
+        var sound3 = 'http://www.patatap.com/assets/A/zig-zag.mp3';
+        var sound4 = 'http://www.patatap.com/assets/C/zig-zag.mp3';
+
+        // Keep track of how long each sound has been playing, so that we don't
+        // play them too rapidly.
+        var playerTimeout = {};
+
 
         // Also, wait for keyboard presses and play sounds then.
         document.addEventListener('keypress', function(evt) {
             switch (evt.charCode) {
                 case 97:   // 'a'
-                    playSound(stripes[0], sounds[0]);
+                    playSound(quadrant1, sound1);
                     break;
                 case 115:  // 's'
-                    playSound(stripes[1], sounds[1]);
+                    playSound(quadrant2, sound2);
                     break;
                 case 100:  // 'd'
-                    playSound(stripes[2], sounds[2]);
+                    playSound(quadrant3, sound3);
                     break;
                 case 102:  // 'f'
-                    playSound(stripes[3], sounds[3]);
-                    break;
-                case 103:  // 'g'
-                    playSound(stripes[4], sounds[4]);
-                    break;
-                case 104:  // 'h'
-                    playSound(stripes[5], sounds[5]);
-                    break;
-                case 106:  // 'j'
-                    playSound(stripes[6], sounds[6]);
-                    break;
-                case 107:  // 'k'
-                    playSound(stripes[7], sounds[7]);
-                    break;
-                case 108:  // 'l'
-                    playSound(stripes[8], sounds[8]);
+                    playSound(quadrant4, sound4);
                     break;
                 default:
                     console.log(evt.charCode);
@@ -190,6 +160,17 @@
         // - "el" is the element that was clicked on.
         // - "soundfile" is a string that has the location of the sound file.
         function playSound(el, soundfile) {
+
+            // If the sound is already playing, then exit the function
+            // immediately.
+            if (playerTimeout[soundfile]) { return; }
+
+            // If the sound isn't playing yet, set a timer for however long we
+            // should wait before playing the sound again.
+            playerTimeout[soundfile] = setTimeout(function() {
+                clearTimeout(playerTimeout[soundfile]);
+                delete playerTimeout[soundfile];
+            }, 200);
             
             function turnOn() {
                 el.mp3.play();
