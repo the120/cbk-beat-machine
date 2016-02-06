@@ -6,6 +6,7 @@
 
       html, body {
         margin: 0;
+        font-family: sans-serif;
       }
 
       .grid {
@@ -71,31 +72,37 @@
         opacity: 1;
         width: 100%;
       }
-        
-        .fork {
-            position: absolute;
-            bottom: 0;
-            text-align: center;
-            background-color: rgba(0,0,0,0.5);
-            box-sizing: border-box;
-            width: 100%;
-        }
-        
-        .fork a {
-            color: white;
-            padding: 0.5em;
-        }
-        
-        .instructions {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            padding-top: 50%;
-        }
-        
-        .instructions p {
-            transform: translate(0, -50%);
-        }
+
+      .fork {
+        position: absolute;
+        bottom: 0;
+
+        box-sizing: border-box;
+        width: 100%;
+
+        text-align: center;
+        background-color: rgba(0,0,0,0.5);
+      }
+
+      .fork a {
+        color: white;
+        padding: 0.5em;
+      }
+
+      .instructions {
+        position: absolute;
+        top: 50vh;
+        left: 50vw;
+      }
+
+      .instructions p {
+        margin: auto;
+        padding: 1em 2em;
+        border-radius: 1.5em;
+        transform: translate(-50%);
+        background-color: rgba(0,0,0,0.33);
+        color: white;
+      }
 
     </style>
 </head>
@@ -109,11 +116,11 @@
         </div>
       </div>
     </div>
-    
+
     <div class="instructions">
         <p>Type A, S, D, F, G, H, J, K, or L</p>
     </div>
-    
+
     <div class="fork">
         <p><a href="https://codio.com/mjumbewu/coded-by-kids---music-box---step-1">View on Codio</a></p>
     </div>
@@ -130,19 +137,19 @@
         var grid = document.getElementById('grid');
         var stripes = [document.getElementById('stripe-0')];
         var letters = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']
-        
+
         for (var q = 1; q < 9; q = q + 1) {
             // Make a copy of the first stripe.
             stripes[q] = stripes[0].cloneNode(true);
-            
+
             // Update the id of the new copy.
             stripes[q].setAttribute('id', 'stripe-' + q);
             stripes[q].getElementsByTagName('button')[0].innerHTML = letters[q];
-            
+
             // Add the new copy into the grid.
             grid.appendChild(stripes[q]);
         }
-        
+
         var sounds = [
             'http://patatap.com/assets/A/wipe.mp3',
             'http://patatap.com/assets/A/veil.mp3',
@@ -201,13 +208,13 @@
         // - "el" is the element that was clicked on.
         // - "soundfile" is a string that has the location of the sound file.
         function playSound(el, soundfile) {
-            
+
             function turnOn() {
                 el.mp3.play();
                 el.classList.remove('off');
                 el.classList.add('on');
             }
-            
+
             function turnOff() {
                 el.mp3.pause();
                 el.classList.remove('on');
@@ -220,7 +227,7 @@
                 el.mp3 = new Audio(soundfile);
                 el.mp3.loop = false;
                 turnOn();
-                
+
                 el.mp3.addEventListener('ended', function() {
                     turnOff();
                 });
