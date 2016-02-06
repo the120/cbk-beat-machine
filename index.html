@@ -50,7 +50,7 @@
 
       .stripe {
         display: inline-block;
-        width: 11%;
+        width: 11.11%;
         height: 100vh;
         text-align: center;
       }
@@ -85,6 +85,17 @@
             color: white;
             padding: 0.5em;
         }
+        
+        .instructions {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            padding-top: 50%;
+        }
+        
+        .instructions p {
+            transform: translate(0, -50%);
+        }
 
     </style>
 </head>
@@ -100,7 +111,7 @@
     </div>
     
     <div class="instructions">
-        <p>Type</p>
+        <p>Type A, S, D, F, G, H, J, K, or L</p>
     </div>
     
     <div class="fork">
@@ -120,7 +131,7 @@
         var stripes = [document.getElementById('stripe-0')];
         var letters = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']
         
-        for (var q = 1; q < 10; q = q + 1) {
+        for (var q = 1; q < 9; q = q + 1) {
             // Make a copy of the first stripe.
             stripes[q] = stripes[0].cloneNode(true);
             
